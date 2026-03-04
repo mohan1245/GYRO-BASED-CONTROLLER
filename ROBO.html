@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dual-Hand Gesture Controlled Serial Manipulator Interface</title>
+<style>
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f6f9;
+    color: #222;
+}
+
+header {
+    background: #0d1b2a;
+    color: white;
+    padding: 30px;
+    text-align: center;
+}
+
+section {
+    padding: 40px;
+    margin: 20px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0,0,0,0.1);
+}
+
+h1, h2 {
+    color: #0d1b2a;
+}
+
+ul {
+    line-height: 1.7;
+}
+
+.highlight {
+    color: #1b263b;
+    font-weight: bold;
+}
+
+footer {
+    text-align: center;
+    padding: 20px;
+    background: #0d1b2a;
+    color: white;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<h1>Dual-Hand Gesture Controlled Interface for Serial Manipulators</h1>
+<p>22AIE214 – Advanced Industrial Robotics Project</p>
+</header>
+<ul>
+<li>MOHAN INNANI –  CB.SC.U4AIE24136</li>
+<li>VARSHITHA.P – CB.SC.U4AIE24144</li>
+<li>TAGUR MISHRA – CB.SC.U4AIE24150</li>
+
+</ul>
+<section>
+<h2>1. Introduction & Motivation</h2>
+<p>
+Industrial serial manipulators are traditionally controlled using teach pendants,
+joysticks, or programmed trajectories. These methods lack intuitive human interaction.
+</p>
+
+<p>
+This project proposes a <span class="highlight">wearable dual-hand gesture-based control system</span>
+using ESP32 and MPU6050 sensors to enable natural motion-based control of a serial manipulator
+or robotic system in real-time.
+</p>
+
+<p>
+Motivation:
+</p>
+<ul>
+<li>Create an intuitive human-robot interface.</li>
+<li>Reduce dependency on expensive industrial control hardware.</li>
+<li>Enable immersive robotic manipulation using motion gestures.</li>
+<li>Bridge embedded systems with robotic kinematics and control.</li>
+</ul>
+</section>
+
+<section>
+<h2>2. Novelty of the Project</h2>
+<ul>
+<li>Dual independent wearable controllers (one per hand).</li>
+<li>Real-time UDP-based low-latency wireless communication.</li>
+<li>Human gesture to manipulator joint-space mapping.</li>
+<li>Threaded queue-based architecture for high responsiveness.</li>
+<li>Low-cost alternative to industrial motion control interfaces.</li>
+</ul>
+
+<p>
+Unlike conventional controllers, this system enables
+<span class="highlight">natural Cartesian-space motion mapping to serial manipulator joints</span>.
+</p>
+</section>
+
+<section>
+<h2>3. Methodology</h2>
+
+<h3>3.1 Forward Kinematics</h3>
+<p>
+Forward kinematics computes end-effector position from joint variables.
+We model the serial manipulator using Denavit–Hartenberg (DH) parameters.
+</p>
+
+<p>
+T = A1 × A2 × A3 × ... × An
+</p>
+
+<p>
+Where Ai represents homogeneous transformation matrices derived from DH parameters.
+The computed transformation matrix gives:
+</p>
+
+<ul>
+<li>End-effector position (x, y, z)</li>
+<li>Orientation (Rotation Matrix)</li>
+</ul>
+
+<h3>3.2 Inverse Kinematics</h3>
+<p>
+Inverse kinematics computes joint angles required to achieve a desired end-effector pose.
+Gesture inputs are mapped into:
+</p>
+
+<ul>
+<li>Desired Cartesian coordinates</li>
+<li>Desired orientation adjustments</li>
+</ul>
+
+<p>
+Geometric and numerical methods are used to solve joint variables:
+</p>
+
+<p>
+θ = f⁻¹(x, y, z, orientation)
+</p>
+
+<h3>3.3 Control Strategy</h3>
+<ul>
+<li>MPU6050 detects pitch, roll, yaw.</li>
+<li>ESP32 processes motion data.</li>
+<li>UDP protocol transmits encoded motion data.</li>
+<li>Multi-threaded C program receives data.</li>
+<li>Queue system processes commands.</li>
+<li>Joint commands sent to simulated manipulator.</li>
+</ul>
+
+<p>
+Control type: Real-time position control with gesture-to-joint mapping.
+</p>
+</section>
+
+<section>
+    <h2>4. Hardware Wiring Diagram & Project Demonstration</h2>
+    <div style="text-align: center;">
+        <img src="file:///C:/Users/Mohan/OneDrive/Pictures/Screenshots/Screenshot%202026-03-03%20011821.png" 
+             alt="ESP32 and MPU6050 Wiring Diagram" 
+             style="max-width: 100%; height: auto; border: 2px solid #0d1b2a; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.2);">
+        <p style="margin-top: 10px; font-style: italic; color: #555;">
+            Figure 1: Hardware integration featuring ESP32, MPU6050, and power management modules.
+        </p>
+    </div>
+</section>
+
+
+<section>
+    <h2></h2>
+    <p>The following video demonstrates the real-time gesture-to-joint mapping using the wearable glove.</p>
+    <div style="text-align: center;">
+        <video width="640" height="360" controls style="border-radius: 10px; box-shadow: 0px 4px 15px rgba(0,0,0,0.3);">
+            <source src="file:///C:/Users/Mohan/Videos/WhatsApp%20Video%202025-11-25%20at%2011.48.58%20PM.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+        <p style="margin-top: 10px; font-style: italic; color: #555;">
+            Clip 1: Real-time UDP transmission .
+        </p>
+    </div>
+</section>
+
+<section>
+<h2>5. Selected Serial Manipulator for Simulation</h2>
+
+<p>
+We simulate a 3-DOF serial manipulator:
+</p>
+
+<ul>
+<li>Revolute Joint 1 – Base rotation</li>
+<li>Revolute Joint 2 – Shoulder</li>
+<li>Revolute Joint 3 – Elbow</li>
+</ul>
+
+<p>
+Simulation Environment:
+</p>
+
+<ul>
+<li>Custom C-based visualization</li>
+<li>DH parameter modeling</li>
+<li>Real-time joint updates from gesture inputs</li>
+</ul>
+
+<p>
+Gesture Mapping Example:
+</p>
+
+<ul>
+<li>Tilt forward → Increase θ2</li>
+<li>Rotate wrist right → Increase θ1</li>
+<li>Lift hand → Increase θ3</li>
+<li>Button press → Gripper close</li>
+</ul>
+
+<p>
+Result:
+Smooth manipulator motion corresponding to natural human hand movement.
+</p>
+
+</section>
+
+<section>
+<h2>6. System Architecture</h2>
+
+<ul>
+<li>MPU6050 (Gyroscope + Accelerometer)</li>
+<li>ESP32-WROOM Microcontroller</li>
+<li>UDP Wi-Fi Communication</li>
+<li>Multi-threaded C Receiver (pthreads)</li>
+<li>Queue-based Data Processing</li>
+<li>Manipulator Simulation Module</li>
+</ul>
+
+<p>
+The architecture ensures:
+</p>
+
+<ul>
+<li>Low latency</li>
+<li>High responsiveness</li>
+<li>Separation of data acquisition and execution threads</li>
+</ul>
+
+</section>
+
+<section>
+<h2>7. Expected Outcomes</h2>
+
+<ul>
+<li>Real-time gesture-controlled serial manipulator.</li>
+<li>Smooth joint-space motion.</li>
+<li>Low communication delay.</li>
+<li>Reprogrammable gesture-to-joint mapping.</li>
+<li>Scalable to 6-DOF industrial arms.</li>
+</ul>
+
+</section>
+
+<section>
+<h2>8. Applications</h2>
+
+<ul>
+<li>Industrial robot teaching interface</li>
+<li>Virtual robotic simulation</li>
+<li>Teleoperation systems</li>
+<li>Assistive robotic control</li>
+<li>VR-based robotic interaction</li>
+</ul>
+
+</section>
+
+<section>
+<h2>9. References</h2>
+
+<ul>
+<li>Denavit, J., & Hartenberg, R. (1955). A kinematic notation for lower-pair mechanisms.</li>
+<li>Craig, J. J. – Introduction to Robotics: Mechanics and Control.</li>
+<li>ESP32 Official Documentation.</li>
+<li>MPU6050 Technical Datasheet.</li>
+<li>Embedded Systems Design Resources.</li>
+</ul>
+
+</section>
+
+<section>
+<h2>10. Contributors</h2>
+
+<ul>
+<li>MOHAN INNANI –  Embedded Programming & Control Logic & C Programming</li>
+<li>VARSHITHA.P – Communication Protocol Design</li>
+<li>TAGUR MISHRA –System Architecture</li>
+
+</ul>
+
+</section>
+
+<footer>
+<p>22AIE214 – Advanced Industrial Robotics | Gesture Controlled Serial Manipulator Interface</p>
+</footer>
+
+</body>
+</html>
